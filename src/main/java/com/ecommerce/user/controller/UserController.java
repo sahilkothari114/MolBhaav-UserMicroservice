@@ -3,7 +3,6 @@ package com.ecommerce.user.controller;
 import com.ecommerce.user.DTO.UserDTO;
 import com.ecommerce.user.entity.User;
 import com.ecommerce.user.service.UserService;
-import com.ecommerce.user.util.PasswordHash;
 import com.ecommerce.user.util.PasswordHashInterface;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -15,9 +14,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.jws.soap.SOAPBinding;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 @RestController
@@ -51,29 +51,6 @@ public class UserController {
 
     }
 
-//    @RequestMapping(value = "/login", method = RequestMethod.POST)
-//    public ResponseEntity<String> login(@RequestBody UserDTO userDTO) {
-//        ResponseEntity<String> response = null;
-//        User user = new User();
-//        BeanUtils.copyProperties(userDTO,user);
-//        User ExistingUser = userService.findByEmailId(user.getEmailId());
-//        try {
-//            if (passwordHash.validatePassword(user.getPassword(),ExistingUser.getPassword())){
-//                userDTO=new UserDTO();
-//                BeanUtils.copyProperties(user,userDTO);
-//                return new ResponseEntity<UserDTO>(userDTO,HttpStatus.ACCEPTED);
-//            }
-//            else {
-//                return new ResponseEntity<UserDTO>(userDTO,HttpStatus.UNAUTHORIZED);
-//            }
-//        } catch (NoSuchAlgorithmException e) {
-//            e.printStackTrace();
-//        } catch (InvalidKeySpecException e) {
-//            e.printStackTrace();
-//        }
-//
-//
-//    }
 @RequestMapping(method = RequestMethod.POST, value = "/login")
 public ResponseEntity<String> login(@RequestBody UserDTO userDTO) {
     LOGGER.info("Received a request for login");
@@ -147,6 +124,14 @@ public ResponseEntity<String> login(@RequestBody UserDTO userDTO) {
         return userDTO;
     }
 
-
-
+    @RequestMapping(value = "/",method = RequestMethod.GET)
+    public List<UserDTO> findAll(){
+        List<UserDTO> userDTOList = new ArrayList<>();
+        for (User user:userService.findAll()) {
+            UserDTO userDTO = new UserDTO();
+            BeanUtils.copyProperties(user,userDTO);
+            userDTOList.add(userDTO);
+        }
+        return userDTOList;
+    }
 }
