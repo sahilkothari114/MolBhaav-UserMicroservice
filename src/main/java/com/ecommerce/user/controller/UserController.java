@@ -118,6 +118,7 @@ public ResponseEntity<String> login(@RequestBody UserDTO userDTO) {
 
     @RequestMapping(value = "/profile/{userId}",method = RequestMethod.GET)
     public UserDTO profile(@PathVariable("userId") long userId){
+        LOGGER.info("Received GET request for profileId:" +userId);
         User user = userService.findOne(userId);
         UserDTO userDTO = new UserDTO();
         BeanUtils.copyProperties(user,userDTO);
@@ -126,6 +127,7 @@ public ResponseEntity<String> login(@RequestBody UserDTO userDTO) {
 
     @RequestMapping(value = "/",method = RequestMethod.GET)
     public List<UserDTO> findAll(){
+        LOGGER.info("Received GEt request to fetch all Users");
         List<UserDTO> userDTOList = new ArrayList<>();
         for (User user:userService.findAll()) {
             UserDTO userDTO = new UserDTO();
