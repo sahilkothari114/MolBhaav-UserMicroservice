@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.Objects;
 
 @RestController
+
 @RequestMapping("/users")
 public class UserController {
     @Autowired
@@ -30,7 +31,7 @@ public class UserController {
     private PasswordHashInterface passwordHash;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(UserController.class);
-
+    @CrossOrigin(origins = "*")
     @RequestMapping(value = "/signIn", method = RequestMethod.POST)
     public ResponseEntity<UserDTO> signIn(@RequestBody UserDTO userDTO){
         User user = new User();
@@ -50,7 +51,7 @@ public class UserController {
         return new ResponseEntity<UserDTO>(userDTO,HttpStatus.CREATED);
 
     }
-
+    @CrossOrigin(origins = "*")
 @RequestMapping(method = RequestMethod.POST, value = "/login")
 public ResponseEntity<String> login(@RequestBody UserDTO userDTO) {
     LOGGER.info("Received a request for login");
