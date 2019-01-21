@@ -107,6 +107,7 @@ public ResponseEntity<String> login(@RequestBody UserDTO userDTO) {
      *            contains updated values
      * @return user with updated values
      */
+    @CrossOrigin(origins = "*")
     @RequestMapping(value = "/editProfile", method = RequestMethod.PUT)
     public ResponseEntity<UserDTO> editProfile(@RequestBody User user) {
         LOGGER.info("Received a request for edit profile");
@@ -116,7 +117,7 @@ public ResponseEntity<String> login(@RequestBody UserDTO userDTO) {
         BeanUtils.copyProperties(user,userDTO);
         return new ResponseEntity<>(userDTO, HttpStatus.OK);
     }
-
+    @CrossOrigin(origins = "*")
     @RequestMapping(value = "/profile/{userId}",method = RequestMethod.GET)
     public UserDTO profile(@PathVariable("userId") long userId){
         LOGGER.info("Received GET request for profileId:" +userId);
@@ -125,7 +126,7 @@ public ResponseEntity<String> login(@RequestBody UserDTO userDTO) {
         BeanUtils.copyProperties(user,userDTO);
         return userDTO;
     }
-
+    @CrossOrigin(origins = "*")
     @RequestMapping(value = "/",method = RequestMethod.GET)
     public List<UserDTO> findAll(){
         LOGGER.info("Received GEt request to fetch all Users");
