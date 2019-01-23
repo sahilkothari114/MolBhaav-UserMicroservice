@@ -21,7 +21,7 @@ import java.util.List;
 import java.util.Objects;
 
 @RestController
-
+@CrossOrigin(origins = "*")
 @RequestMapping("/users")
 public class UserController {
     @Autowired
@@ -51,53 +51,53 @@ public class UserController {
         return new ResponseEntity<UserDTO>(userDTO,HttpStatus.CREATED);
     }
     @CrossOrigin(origins = "*")
-@RequestMapping(method = RequestMethod.POST, value = "/login")
-public ResponseEntity<String> login(@RequestBody UserDTO userDTO) {
-    LOGGER.info("Received a request for login");
-    ResponseEntity<String> response = null;
-    User user = new User();
-    BeanUtils.copyProperties(userDTO,user);
-    try {
-        if (!Objects.isNull(user) && !Objects.isNull(user.getEmailId()) && !Objects.isNull(user.getPassword())) {
-            final String username = user.getEmailId();
-            final User ExistingUser = userService.findByEmailId(username);
-            JSONObject exceptionJson = new JSONObject();
-                exceptionJson.put("message", "Invalid login. Please check your name and password.");
+    @RequestMapping(method = RequestMethod.POST, value = "/login")
+    public ResponseEntity<String> login(@RequestBody UserDTO userDTO) {
+        LOGGER.info("Received a request for login");
+        ResponseEntity<String> response = null;
+        User user = new User();
+        BeanUtils.copyProperties(userDTO,user);
+        try {
+            if (!Objects.isNull(user) && !Objects.isNull(user.getEmailId()) && !Objects.isNull(user.getPassword())) {
+                final String username = user.getEmailId();
+                final User ExistingUser = userService.findByEmailId(username);
+                JSONObject exceptionJson = new JSONObject();
+                    exceptionJson.put("message", "Invalid login. Please check your name and password.");
 
-            if (Objects.isNull(ExistingUser)) {
-                LOGGER.info("Login failed.");
-                response = new ResponseEntity<>(exceptionJson.toString(), HttpStatus.UNAUTHORIZED);
-            } else {
-                final boolean isLoginSuccessful = passwordHash.validatePassword(user.getPassword(),ExistingUser.getPassword());
-
-                if (isLoginSuccessful) {
-                    JSONObject userJson = new JSONObject();
-                    userJson.put("userId", ExistingUser.getUserId())
-                            .put("name", ExistingUser.getName())
-                            .put("emailId", ExistingUser.getEmailId());
-                    response = new ResponseEntity<>(userJson.toString(), HttpStatus.OK);
-                    LOGGER.info("Login successful");
-                } else {
-                    response = new ResponseEntity<>(exceptionJson.toString(), HttpStatus.UNAUTHORIZED);
+                if (Objects.isNull(ExistingUser)) {
                     LOGGER.info("Login failed.");
+                    response = new ResponseEntity<>(exceptionJson.toString(), HttpStatus.UNAUTHORIZED);
+                } else {
+                    final boolean isLoginSuccessful = passwordHash.validatePassword(user.getPassword(),ExistingUser.getPassword());
+
+                    if (isLoginSuccessful) {
+                        JSONObject userJson = new JSONObject();
+                        userJson.put("userId", ExistingUser.getUserId())
+                                .put("name", ExistingUser.getName())
+                                .put("emailId", ExistingUser.getEmailId());
+                        response = new ResponseEntity<>(userJson.toString(), HttpStatus.OK);
+                        LOGGER.info("Login successful");
+                    } else {
+                        response = new ResponseEntity<>(exceptionJson.toString(), HttpStatus.UNAUTHORIZED);
+                        LOGGER.info("Login failed.");
+                    }
                 }
+            } else {
+                JSONObject exceptionJson = new JSONObject();
+                exceptionJson.put("message", "Email or password cannot be null.");
+                response = new ResponseEntity<>(exceptionJson.toString(), HttpStatus.BAD_REQUEST);
+                LOGGER.info("Login failed.");
             }
-        } else {
-            JSONObject exceptionJson = new JSONObject();
-            exceptionJson.put("message", "Email or password cannot be null.");
-            response = new ResponseEntity<>(exceptionJson.toString(), HttpStatus.BAD_REQUEST);
-            LOGGER.info("Login failed.");
+        } catch (JSONException e) {
+            LOGGER.error("Error occurred while creating JSON object");
+            response = new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        } catch (InvalidKeySpecException e) {
+            e.printStackTrace();
         }
-    } catch (JSONException e) {
-        LOGGER.error("Error occurred while creating JSON object");
-        response = new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-    } catch (NoSuchAlgorithmException e) {
-        e.printStackTrace();
-    } catch (InvalidKeySpecException e) {
-        e.printStackTrace();
+        return response;
     }
-    return response;
-}
 
     /**
      * Edits user profile except email
