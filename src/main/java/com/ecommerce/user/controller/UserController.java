@@ -49,7 +49,6 @@ public class UserController {
         BeanUtils.copyProperties(user,userDTO);
 
         return new ResponseEntity<UserDTO>(userDTO,HttpStatus.CREATED);
-
     }
     @CrossOrigin(origins = "*")
 @RequestMapping(method = RequestMethod.POST, value = "/login")
