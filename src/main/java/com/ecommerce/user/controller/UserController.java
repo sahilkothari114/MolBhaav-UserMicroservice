@@ -129,12 +129,12 @@ public class UserController {
     }
     @CrossOrigin(origins = "*")
     @RequestMapping(value = "/profile/{userId}",method = RequestMethod.GET)
-    public UserDTO profile(@PathVariable("userId") long userId){
+    public ResponseEntity<UserDTO> profile(@PathVariable("userId") long userId){
         LOGGER.info("Received GET request for profileId:" +userId);
         User user = userService.findOne(userId);
         UserDTO userDTO = new UserDTO();
         BeanUtils.copyProperties(user,userDTO);
-        return userDTO;
+        return new ResponseEntity<>(userDTO,HttpStatus.OK);
     }
     @CrossOrigin(origins = "*")
     @RequestMapping(value = "/",method = RequestMethod.GET)
