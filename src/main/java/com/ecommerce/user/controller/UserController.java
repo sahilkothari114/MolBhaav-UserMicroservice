@@ -34,6 +34,9 @@ public class UserController {
     @CrossOrigin(origins = "*")
     @RequestMapping(value = "/signIn", method = RequestMethod.POST)
     public ResponseEntity<UserDTO> signIn(@RequestBody UserDTO userDTO){
+        if(Objects.isNull(userDTO) || Objects.isNull(userDTO.getName()) || Objects.isNull(userDTO.getEmailId()) || Objects.isNull(userDTO.getPassword()) ){
+            return new ResponseEntity<UserDTO>(userDTO,HttpStatus.BAD_REQUEST);
+        }
         User user = new User();
         BeanUtils.copyProperties(userDTO,user);
         try {
@@ -43,8 +46,16 @@ public class UserController {
         } catch (InvalidKeySpecException e) {
             e.printStackTrace();
         }
+        User signedInUser=new User();
+        try {
+            signedInUser = userService.save(user);
+        }catch (Exception e){
+            return new ResponseEntity<UserDTO>(userDTO,HttpStatus.BAD_REQUEST);
 
-        User signedInUser = userService.save(user);
+        }
+        if (Objects.isNull(signedInUser)){
+            return new ResponseEntity<UserDTO>(userDTO,HttpStatus.BAD_REQUEST);
+        }
         userDTO=new UserDTO();
         BeanUtils.copyProperties(user,userDTO);
 
