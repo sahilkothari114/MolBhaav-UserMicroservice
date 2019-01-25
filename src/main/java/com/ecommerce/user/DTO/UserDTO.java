@@ -67,4 +67,18 @@ public class UserDTO {
     public void setAddress(String address) {
         this.address = address;
     }
+
+    @Override
+    public String toString() {
+        final StringBuilder sb = new StringBuilder("UserDTO{");
+        sb.append("userId=").append(userId);
+        sb.append(", name='").append(name).append('\'');
+        sb.append(", emailId='").append(emailId).append('\'');
+        sb.append(", password='").append(password).append('\'');
+        sb.append(", address='").append(address).append('\'');
+        sb.append(", message='").append(message).append('\'');
+        sb.append(", status=").append(status);
+        sb.append('}');
+        return sb.toString();
+    }
 }
