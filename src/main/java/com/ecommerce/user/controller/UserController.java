@@ -97,6 +97,7 @@ public class UserController {
         if(Objects.isNull(userDTO)){
             userDTO.setMessage("EmailId or Password can not be empty.");
             userDTO.setStatus(400);
+            LOGGER.info(userDTO.toString());
             return new ResponseEntity<UserDTO>(userDTO,HttpStatus.BAD_REQUEST);
         }
         else if (userDTO.getEmailId()==null){
