@@ -94,18 +94,18 @@ public class UserController {
         ResponseEntity<String> response = null;
         User user = new User();
         BeanUtils.copyProperties(userDTO,user);
-        if(Objects.isNull(userDTO)){
+        if(Objects.isNull(user)){
             userDTO.setMessage("EmailId or Password can not be empty.");
             userDTO.setStatus(400);
-            LOGGER.info(userDTO.toString());
+            LOGGER.info("EmailId or Password can not be empty."+userDTO.toString());
             return new ResponseEntity<UserDTO>(userDTO,HttpStatus.BAD_REQUEST);
         }
-        else if (userDTO.getEmailId()==null){
+        else if (user.getEmailId()==null){
             userDTO.setMessage("EmailId can not be empty.");
             userDTO.setStatus(400);
             return new ResponseEntity<UserDTO>(userDTO,HttpStatus.BAD_REQUEST);
         }
-        else if (userDTO.getPassword()==null) {
+        else if (user.getPassword()==null) {
             userDTO.setMessage("Password can not be empty.");
             userDTO.setStatus(400);
             return new ResponseEntity<UserDTO>(userDTO, HttpStatus.BAD_REQUEST);
